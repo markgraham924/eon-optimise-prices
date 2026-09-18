@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Unofficial public tracker for observed E.ON Next Optimise import and export prices.">
+  <title>Optimise Price Watch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Optimise Price Watch home"><span class="mark">OP</span><span>Optimise Price Watch</span></a>
+      <div class="nav-links"><a href="#prices">Prices</a><a href="#revisions">Revisions</a><a href="#about">About the data</a></div>
+    </nav>
+    <div class="shell hero-grid" id="top">
+      <div>
+        <p class="eyebrow">Independent tariff tracking</p>
+        <h1>See what E.ON Next Optimise prices are doing.</h1>
+        <p class="lede">Observed half-hourly import and export prices, including every change we recorded before delivery.</p>
+        <div class="status-line"><span class="pulse" aria-hidden="true"></span><span id="freshness">Loading the latest observation…</span></div>
+      </div>
+      <div class="hero-card" aria-label="Current price summary">
+        <p class="small-label">Current half hour</p>
+        <div class="current-pair">
+          <div><span>Import</span><strong id="current-import">—</strong></div>
+          <div><span>Export</span><strong id="current-export">—</strong></div>
+        </div>
+        <p class="subtle" id="current-period">Waiting for price data</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell controls" aria-label="Price filters">
+      <label>Region<select id="region"><option value="north-west">North West · G · observed</option><option disabled>Other regions · contributors needed</option></select></label>
+      <label>Day<select id="day"></select></label>
+      <div class="segmented" role="group" aria-label="Price direction">
+        <button class="active" data-channel="import">Import</button><button data-channel="export">Export</button>
+      </div>
+    </section>
+
+    <section class="shell" id="prices">
+      <div class="section-head"><div><p class="eyebrow">Half-hour prices</p><h2 id="chart-title">Import prices</h2></div><div class="legend"><span><i class="line-dot"></i>Latest</span><span><i class="range-dot"></i>Recorded range</span></div></div>
+      <div class="chart-card"><canvas id="price-chart" height="380" aria-label="Half-hourly price chart"></canvas><div class="tooltip" id="tooltip" hidden></div></div>
+      <div class="stats" id="stats"></div>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Latest</th><th>First seen</th><th>Recorded range</th><th>Changes</th></tr></thead><tbody id="price-table"></tbody></table></div>
+    </section>
+
+    <section class="band" id="revisions"><div class="shell">
+      <div class="section-head"><div><p class="eyebrow">Price revisions</p><h2>What changed before delivery?</h2></div><p class="section-copy">E.ON can revise a forecast slot. These are the changes our five-minute collector observed, not an uncertainty forecast.</p></div>
+      <div class="revision-grid" id="revision-list"></div>
+    </div></section>
+
+    <section class="shell about" id="about">
+      <div><p class="eyebrow">About the data</p><h2>Useful context before you use it</h2></div>
+      <div class="about-grid">
+        <article><h3>Observed from one region</h3><p>This feed comes from a consenting Next Optimise customer site in the North West electricity region. It does not contain account, address, meter, usage or billing data.</p></article>
+        <article><h3>Forecasts can move</h3><p>Future prices are indicative. E.ON says a half-hour rate becomes fixed when delivery begins. “First seen” is our collection time, not E.ON’s publication time.</p></article>
+        <article><h3>Booster included</h3><p>The observed account has the Early Bird Booster, so its displayed prices include the applicable 3p import/export adjustments. Other customers may see different rates.</p></article>
+        <article><h3>Independent project</h3><p>This is an unofficial, non-commercial community tracker and is not affiliated with or endorsed by E.ON Next. Check your app and bill before making financial decisions.</p></article>
+      </div>
+      <p class="source-note">Source: price observations supplied by a participating customer. Tariff details: <a href="https://www.eonnext.com/tariffs/next-optimise" rel="noopener">E.ON Next Optimise</a>. <a href="legal.html">Data, privacy and terms note</a>.</p>
+    </section>
+  </main>
+  <footer><div class="shell"><span>Optimise Price Watch</span><span>Prices in p/kWh · Europe/London</span></div></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
+
