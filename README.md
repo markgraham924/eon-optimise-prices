@@ -18,6 +18,8 @@ The authenticated E.ON integration remains private. A local scheduled publisher 
 
 The current E.ON GraphQL operation accepts a `siteId`, not a DNO-region parameter. Authorization binds accessible sites to the signed-in customer. A multi-region service therefore needs consenting contributors in each region or a documented E.ON regional feed; it must not enumerate or guess other customer site IDs.
 
+See [REGIONS.md](REGIONS.md) for the regional collection design and [TERMS_REVIEW.md](TERMS_REVIEW.md) for the recorded terms review.
+
 ## Terms position
 
 No Next Optimise tariff-specific clause found in the review expressly prohibits recording or publishing displayed prices. E.ON describes the tariff as a public beta and says future half-hour prices are predicted until delivery begins. There is no documented public API licence for the authenticated feed, so this project is deliberately non-commercial, rate-limited, attributed and privacy-scrubbed. Written E.ON permission is recommended before operating it as a large continuous public data service. This is practical technical due diligence, not legal advice.
