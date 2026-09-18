@@ -7,9 +7,9 @@ The browser receives price and observation data only. It never receives an E.ON 
 ## Local build
 
 ```powershell
-python scripts/export_public.py --url http://192.168.0.202:8511/api/prices --output public/data/north-west.json
+python scripts/export_public.py --url http://192.168.0.202:8511/api/prices --output docs/data/north-west.json
 python -m unittest discover -s tests -v
-python -m http.server 8522 --directory public
+python -m http.server 8522 --directory docs
 ```
 
 ## Publishing architecture
@@ -21,4 +21,3 @@ The current E.ON GraphQL operation accepts a `siteId`, not a DNO-region paramete
 ## Terms position
 
 No Next Optimise tariff-specific clause found in the review expressly prohibits recording or publishing displayed prices. E.ON describes the tariff as a public beta and says future half-hour prices are predicted until delivery begins. There is no documented public API licence for the authenticated feed, so this project is deliberately non-commercial, rate-limited, attributed and privacy-scrubbed. Written E.ON permission is recommended before operating it as a large continuous public data service. This is practical technical due diligence, not legal advice.
-
