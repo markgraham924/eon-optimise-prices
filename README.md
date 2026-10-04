@@ -7,12 +7,17 @@ The browser receives price and observation data only. It never receives an E.ON 
 ## Local build
 
 ```powershell
-python scripts/export_public.py --url http://192.168.0.202:8511/api/prices --output docs/data/north-west.json
+python scripts/export_public.py --url http://192.168.0.202:8511/api/prices/all --output docs/data/north-west.json
 python -m unittest discover -s tests -v
 python -m http.server 8522 --directory docs
 ```
 
 ## Publishing architecture
+
+Use the full-history `/api/prices/all` endpoint for website refreshes. The existing
+`/api/prices` endpoint intentionally serves only a rolling week to the HA dashboard.
+The website date selector covers every retained delivery date, including partial
+boundary days, and keeps all observed revisions. No AgilePredict data is included.
 
 The authenticated E.ON integration remains private. A local scheduled publisher reads the existing collector, strips everything except the public schema, and updates the static data file. GitHub Pages serves the site without any credentials or access to Home Assistant.
 

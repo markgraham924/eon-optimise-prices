@@ -7,6 +7,7 @@ async function load(){
  catch(e){$('#freshness').textContent='Price data is temporarily unavailable';document.body.classList.add('load-error')}
 }
 function setup(){
+ const days=state.data.days;$('#archive-coverage').textContent=days.length?`Full recorded history: ${dayLabel(days[0])} to ${dayLabel(days.at(-1))} · ${days.length} dates. Boundary days may be incomplete; future E.ON prices remain provisional.`:'No recorded history available.';
  const d=$('#day');state.data.days.forEach(x=>d.add(new Option(dayLabel(x),x)));const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London'}).format(new Date());state.day=state.data.days.includes(today)?today:state.data.days.at(-1);d.value=state.day;d.onchange=()=>{state.day=d.value;render()};
  document.querySelectorAll('[data-channel]').forEach(b=>b.onclick=()=>{state.channel=b.dataset.channel;document.querySelectorAll('[data-channel]').forEach(x=>x.classList.toggle('active',x===b));render()});
  const observed=new Date(state.data.observed_at);$('#freshness').textContent=`Observed ${new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'Europe/London'}).format(observed)}`;
