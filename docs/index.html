@@ -11,14 +11,14 @@
   <header class="hero">
     <nav class="nav shell" aria-label="Primary navigation">
       <a class="brand" href="#top" aria-label="Optimise Price Watch home"><span class="mark">OP</span><span>Optimise Price Watch</span></a>
-      <div class="nav-links"><a href="#prices">Prices</a><a href="#revisions">Revisions</a><a href="#about">About the data</a></div>
+      <div class="nav-links"><a href="#prices">Prices</a><a href="#revisions">Changes</a><a href="#about">How prices work</a></div>
     </nav>
     <div class="shell hero-grid" id="top">
       <div>
-        <p class="eyebrow">Independent tariff tracking</p>
-        <h1>See what E.ON Next Optimise prices are doing.</h1>
-        <p class="lede">Observed half-hourly import and export prices, including every change we recorded before delivery.</p>
-        <div class="status-line"><span class="pulse" aria-hidden="true"></span><span id="freshness">Loading the latest observation…</span></div>
+        <p class="eyebrow">North West England</p>
+        <h1>E.ON Next Optimise prices</h1>
+        <p class="lede">Half-hourly import and export prices, with a history of forecast changes.</p>
+        <div class="status-line"><span class="pulse" aria-hidden="true"></span><span id="freshness">Loading prices…</span></div>
         <p id="archive-coverage"></p>
       </div>
       <div class="hero-card" aria-label="Current price summary">
@@ -34,7 +34,7 @@
 
   <main>
     <section class="shell controls" aria-label="Price filters">
-      <label>Region<select id="region"><option value="north-west">North West · G · observed</option><option disabled>Other regions · contributors needed</option></select></label>
+      <label>Region<select id="region"><option value="north-west">North West · G</option><option disabled>Other regions unavailable</option></select></label>
       <label>Day<select id="day"></select></label>
       <div class="segmented" role="group" aria-label="Price direction">
         <button class="active" data-channel="import">Import</button><button data-channel="export">Export</button>
@@ -42,26 +42,32 @@
     </section>
 
     <section class="shell" id="prices">
-      <div class="section-head"><div><p class="eyebrow">Half-hour prices</p><h2 id="chart-title">Import prices</h2></div><div class="legend"><span><i class="line-dot"></i>Latest</span><span><i class="range-dot"></i>Recorded range</span></div></div>
+      <div class="section-head"><div><p class="eyebrow">Half-hour prices</p><h2 id="chart-title">Import prices</h2></div><div class="legend"><span><i class="line-dot"></i>Latest</span><span><i class="range-dot"></i>Price range</span></div></div>
       <div class="chart-card"><canvas id="price-chart" height="380" aria-label="Half-hourly price chart"></canvas><div class="tooltip" id="tooltip" hidden></div></div>
       <div class="stats" id="stats"></div>
-      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Latest</th><th>First seen</th><th>Recorded range</th><th>Changes</th></tr></thead><tbody id="price-table"></tbody></table></div>
+      <p class="chart-note">Future rates are forecasts. The range shows the lowest and highest quotes saved for each half-hour. Times are UK local time and prices are in pence per kWh.</p>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Latest price</th><th>First price</th><th>Price range</th><th>Changes</th></tr></thead><tbody id="price-table"></tbody></table></div>
     </section>
 
     <section class="band" id="revisions"><div class="shell">
-      <div class="section-head"><div><p class="eyebrow">Price revisions</p><h2>What changed before delivery?</h2></div><p class="section-copy">E.ON can revise a forecast slot. These are the changes our five-minute collector observed, not an uncertainty forecast.</p></div>
+      <div class="section-head"><div><p class="eyebrow">Forecast changes</p><h2>Recent price changes</h2></div><p class="section-copy">E.ON can change future rates. Each entry compares the first price saved with the latest price for the same half-hour.</p></div>
       <div class="revision-grid" id="revision-list"></div>
     </div></section>
 
     <section class="shell about" id="about">
-      <div><p class="eyebrow">About the data</p><h2>Useful context before you use it</h2></div>
+      <div><p class="eyebrow">E.ON, Amber and this website</p><h2>How the prices are published</h2></div>
       <div class="about-grid">
-        <article><h3>Observed from one region</h3><p>This feed comes from a consenting Next Optimise customer site in the North West electricity region. It does not contain account, address, meter, usage or billing data.</p></article>
-        <article><h3>Forecasts can move</h3><p>Future prices are indicative. E.ON says a half-hour rate becomes fixed when delivery begins. “First seen” is our collection time, not E.ON’s publication time.</p></article>
-        <article><h3>Booster included</h3><p>The observed account has the Early Bird Booster, so its displayed prices include the applicable 3p import/export adjustments. Other customers may see different rates.</p></article>
-        <article><h3>Independent project</h3><p>This is an unofficial, non-commercial community tracker and is not affiliated with or endorsed by E.ON Next. Check your app and bill before making financial decisions.</p></article>
+        <article><h3>The Next Optimise app</h3><p>E.ON publishes customer import and export rates in the separate Next Optimise app for iPhone and Android. It uses the Optimise login supplied during onboarding. E.ON says Amber functionality is not available through its other apps. <a href="https://www.eonnext.com/help/next-optimise">App help and download links</a>.</p></article>
+        <article><h3>Amber's UK web dashboard</h3><p>You can also view prices in the <a href="https://app.production.eon-next.amber-international.com.au/">Amber-hosted E.ON web dashboard</a>, which requires a customer login. Its Live Price page calls import “General Usage” and export “Solar Feed-in”. Use “Show Solar Feed-in Prices” or “Show General Usage Prices” to switch the half-hour forecast. Amber supplies the platform behind Next Optimise. <a href="https://www.eonnext.com/blog/wholesale-energy-prices-home-battery-trading">E.ON explains the partnership</a>.</p></article>
+        <article><h3>Forecast, current and past rates</h3><p>The customer feed separates past rates, the current half-hour and future forecasts for import and export. E.ON's published description says prices become fixed when the half-hour starts. Its website describes a rolling 12-hour forecast; this archive has regularly received roughly 24 hours of future rates. A longer visible window is not a price guarantee.</p></article>
+        <article><h3>The refresh around 10am</h3><p>This archive often sees changes to existing forecast rates shortly after 10am UK time. On 7–9 October 2026, changes were first saved between 10:06 and 10:09. New half-hours are also added as the forecast window rolls forward. These are collection times, not E.ON issue times, and they do not establish a fixed daily publication schedule.</p></article>
+        <article><h3>What the unit price includes</h3><p>Next Optimise follows half-hourly wholesale prices and non-commodity costs. The web dashboard labels its current figure “Wholesale Price”, but that label does not establish that it equals a raw exchange price. E.ON has not published the complete calculation in the sources linked here. Import is what you pay for electricity from the grid; export is what you receive for electricity sent to it. The daily standing charge is separate.</p></article>
+        <article><h3>The Early Bird Booster</h3><p>These prices already include the participating customer's booster: 3p/kWh off import from 00:00–06:00 and 3p/kWh added to export from 16:00–19:00. Do not apply it again. E.ON describes the offer as lasting 12 months for its first 1,000 customers. Customers without the booster may see different rates. <a href="https://www.eonnext.com/tariffs/next-optimise">Tariff and booster details</a>.</p></article>
+        <article><h3>Prices and battery plans are different</h3><p>The app's SmartShift plan uses prices, expected solar output and household demand to decide when to charge, hold or export. A plan can change without a tariff rate changing. This website shows supplier rates only; it does not publish a household's battery plan or add estimated prices beyond E.ON's feed.</p></article>
+        <article><h3>How this archive is updated</h3><p>A participating North West customer collects the supplier price feed through Home Assistant at five-minute intervals. Price changes are kept in a local archive. A separate export publishes only prices and their timestamps to GitHub Pages. The timestamp at the top shows the last supplier check included in this website; it is not a live connection to the app. Short-lived changes between checks may be missed.</p></article>
       </div>
-      <p class="source-note">Source: price observations supplied by a participating customer. Tariff details: <a href="https://www.eonnext.com/tariffs/next-optimise" rel="noopener">E.ON Next Optimise</a>. <a href="legal.html">Data, privacy and terms note</a>.</p>
+      <details class="price-details"><summary>More about the website labels</summary><p>The Amber dashboard also shows price categories such as “Very low prices”, a “renewables in grid” figure and usage history. Its renewable figure can exceed 100%; it should not be read as the percentage of your household consumption supplied by renewables. The exact calculation behind that figure is not documented in the sources checked here.</p><p>The UK dashboard and <a href="https://www.amber.com.au/">Amber's Australian company website</a> are different services. Australian spot-market rules and forecasts should not be assumed to apply to E.ON's UK tariff. This tracker publishes the UK supplier price feed only, without private usage history or additional price predictions.</p></details>
+      <p class="source-note">This independent site contains prices from one North West customer. No account, address, meter, usage, billing or login details are published. Use your own Optimise app or Amber-hosted E.ON dashboard for your rates and E.ON for billing. Details checked 10 October 2026. <a href="legal.html">Data and privacy notes</a>.</p>
     </section>
   </main>
   <footer><div class="shell"><span>Optimise Price Watch</span><span>Prices in p/kWh · Europe/London</span></div></footer>
