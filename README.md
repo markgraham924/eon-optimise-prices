@@ -19,7 +19,7 @@ Use the full-history `/api/prices/all` endpoint for website refreshes. The exist
 The website date selector covers every retained delivery date, including partial
 boundary days, and keeps all observed revisions. No AgilePredict data is included.
 
-The authenticated E.ON integration remains private. A local scheduled publisher reads the existing collector, strips everything except the public schema, and updates the static data file. GitHub Pages serves the site without any credentials or access to Home Assistant.
+The authenticated E.ON integration remains private. An always-on management-host publisher runs daily at **10:30 and 21:00 Europe/London**, including BST/GMT changes. It reads the existing collector, requires successful import and export feeds no more than 20 minutes old and forward price coverage, strips everything except the public schema, and pushes the static data file. It retries failures and verifies the file served by GitHub Pages. The schedule also catches up after host downtime. GitHub Pages serves the site without any credentials or access to Home Assistant.
 
 The current E.ON GraphQL operation accepts a `siteId`, not a DNO-region parameter. Authorization binds accessible sites to the signed-in customer. A multi-region service therefore needs consenting contributors in each region or a documented E.ON regional feed; it must not enumerate or guess other customer site IDs.
 
