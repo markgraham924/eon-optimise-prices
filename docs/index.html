@@ -3,26 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Unofficial public tracker for observed E.ON Next Optimise import and export prices.">
+  <meta name="description" content="Historical archive of E.ON Next Optimise import and export prices observed in North West England.">
   <title>Optimise Price Watch</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=archive">
 </head>
 <body>
   <header class="hero">
     <nav class="nav shell" aria-label="Primary navigation">
       <a class="brand" href="#top" aria-label="Optimise Price Watch home"><span class="mark">OP</span><span>Optimise Price Watch</span></a>
-      <div class="nav-links"><a href="#prices">Prices</a><a href="#revisions">Changes</a><a href="#about">How prices work</a></div>
+      <div class="nav-links"><a href="#prices">Prices</a><a href="#summary">Summary charts</a><a href="#revisions">Changes</a><a href="#about">How prices work</a></div>
     </nav>
     <div class="shell hero-grid" id="top">
       <div>
         <p class="eyebrow">North West England</p>
         <h1>E.ON Next Optimise prices</h1>
         <p class="lede">Half-hourly import and export prices, with a history of forecast changes.</p>
-        <div class="status-line"><span class="pulse" aria-hidden="true"></span><span id="freshness">Loading prices…</span></div>
+        <div class="archive-notice">
+          <strong>Regular updates are ending</strong>
+          <p>I'm switching to Intelligent Octopus Go. The E.ON price history and charts will stay available here as an archive.</p>
+        </div>
+        <div class="status-line" id="freshness">Loading price archive…</div>
         <p id="archive-coverage"></p>
       </div>
-      <div class="hero-card" aria-label="Current price summary">
-        <p class="small-label">Current half hour</p>
+      <div class="hero-card" aria-label="Most recent observed prices">
+        <p class="small-label">Most recent observed half hour</p>
         <div class="current-pair">
           <div><span>Import</span><strong id="current-import">—</strong></div>
           <div><span>Export</span><strong id="current-export">—</strong></div>
@@ -45,8 +49,24 @@
       <div class="section-head"><div><p class="eyebrow">Half-hour prices</p><h2 id="chart-title">Import prices</h2></div><div class="legend"><span><i class="line-dot"></i>Latest</span><span><i class="range-dot"></i>Price range</span></div></div>
       <div class="chart-card"><canvas id="price-chart" height="380" aria-label="Half-hourly price chart"></canvas><div class="tooltip" id="tooltip" hidden></div></div>
       <div class="stats" id="stats"></div>
-      <p class="chart-note">Future rates are forecasts. The range shows the lowest and highest quotes saved for each half-hour. Times are UK local time and prices are in pence per kWh.</p>
-      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Latest price</th><th>First price</th><th>Price range</th><th>Changes</th></tr></thead><tbody id="price-table"></tbody></table></div>
+      <p class="chart-note">Future rates are forecasts. Slots saved as forecasts are labelled in the table. The range shows the lowest and highest quotes saved for each half-hour. Times are UK local time and prices are in pence per kWh.</p>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Latest price</th><th>First price</th><th>Price range</th><th>Changes</th><th>At collection</th></tr></thead><tbody id="price-table"></tbody></table></div>
+    </section>
+
+    <section class="shell" id="summary">
+      <div class="section-head"><div><p class="eyebrow">12 September to 9 November 2026</p><h2>What the archive shows</h2></div></div>
+      <p>Across 59 complete days, 18:30–19:00 was the most expensive half-hour for import on average, at 46.9p/kWh on weekdays and 27.1p/kWh on weekends. The cheapest average slot was 03:00–03:30 for both, at 15.2p and 12.6p respectively. The highest observed import slot was 82p/kWh.</p>
+      <div class="archive-charts">
+        <figure class="chart-card">
+          <img src="charts/optimise-daily-price-range.png" width="1680" height="1200" loading="lazy" alt="Daily import and export lows and highs for 59 complete days. Import reached 82p per kWh. Export fell below zero on four days.">
+          <figcaption><a href="charts/optimise-daily-price-range.png" download>Download the daily price range chart (PNG)</a></figcaption>
+        </figure>
+        <figure class="chart-card">
+          <img src="charts/optimise-weekday-weekend-profile.png" width="1680" height="1200" loading="lazy" alt="Average half-hour prices, split by weekdays and weekends. Import peaks at 18:30 in both groups and is lowest at 03:00.">
+          <figcaption><a href="charts/optimise-weekday-weekend-profile.png" download>Download the weekday and weekend chart (PNG)</a></figcaption>
+        </figure>
+      </div>
+      <p class="chart-note">The charts use historical slots from one North West account with the Early Bird Booster. They exclude incomplete days and use equal weighting for each day rather than weighting by electricity use.</p>
     </section>
 
     <section class="band" id="revisions"><div class="shell">
@@ -64,13 +84,13 @@
         <article><h3>What the unit price includes</h3><p>Next Optimise follows half-hourly wholesale prices and non-commodity costs. The web dashboard labels its current figure “Wholesale Price”, but that label does not establish that it equals a raw exchange price. E.ON has not published the complete calculation in the sources linked here. Import is what you pay for electricity from the grid; export is what you receive for electricity sent to it. The daily standing charge is separate.</p></article>
         <article><h3>The Early Bird Booster</h3><p>These prices already include the participating customer's booster: 3p/kWh off import from 00:00–06:00 and 3p/kWh added to export from 16:00–19:00. Do not apply it again. E.ON describes the offer as lasting 12 months for its first 1,000 customers. Customers without the booster may see different rates. <a href="https://www.eonnext.com/tariffs/next-optimise">Tariff and booster details</a>.</p></article>
         <article><h3>Prices and battery plans are different</h3><p>The app's SmartShift plan uses prices, expected solar output and household demand to decide when to charge, hold or export. A plan can change without a tariff rate changing. This website shows supplier rates only; it does not publish a household's battery plan or add estimated prices beyond E.ON's feed.</p></article>
-        <article><h3>How this archive is updated</h3><p>A participating North West customer collects the supplier price feed through Home Assistant at five-minute intervals. Price changes are kept in a local archive. A separate export publishes only prices and their timestamps to GitHub Pages. The timestamp at the top shows the last supplier check included in this website; it is not a live connection to the app. Short-lived changes between checks may be missed.</p></article>
+        <article><h3>How the archive was collected</h3><p>The supplier price feed for one North West customer was checked through Home Assistant at five-minute intervals. A separate export published only prices and their timestamps to GitHub Pages. The timestamp above shows the most recent supplier check included in the archive. Short-lived changes between checks may have been missed.</p></article>
       </div>
       <details class="price-details"><summary>More about the website labels</summary><p>The Amber dashboard also shows price categories such as “Very low prices”, a “renewables in grid” figure and usage history. Its renewable figure can exceed 100%; it should not be read as the percentage of your household consumption supplied by renewables. The exact calculation behind that figure is not documented in the sources checked here.</p><p>The UK dashboard and <a href="https://www.amber.com.au/">Amber's Australian company website</a> are different services. Australian spot-market rules and forecasts should not be assumed to apply to E.ON's UK tariff. This tracker publishes the UK supplier price feed only, without private usage history or additional price predictions.</p></details>
       <p class="source-note">This independent site contains prices from one North West customer. No account, address, meter, usage, billing or login details are published. Use your own Optimise app or Amber-hosted E.ON dashboard for your rates and E.ON for billing. Details checked 10 October 2026. <a href="legal.html">Data and privacy notes</a>.</p>
     </section>
   </main>
   <footer><div class="shell"><span>Optimise Price Watch</span><span>Prices in p/kWh · Europe/London</span></div></footer>
-  <script src="app.js" defer></script>
+  <script src="app.js?v=archive" defer></script>
 </body>
 </html>

@@ -2,3 +2,9 @@
 
 
 .chart-note{color:var(--muted);font-size:14px;margin:0 0 18px}.about a,.price-details a{color:var(--green)}.price-details{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:18px 24px;background:#fff}.price-details summary{cursor:pointer;font-weight:700}.price-details p{color:var(--muted);max-width:85ch}
+
+.archive-notice{max-width:580px;margin:0 0 20px;padding:14px 16px;border-left:3px solid var(--lime);background:#233c33;border-radius:0 10px 10px 0}
+.archive-notice strong{color:var(--lime)}.archive-notice p{margin:4px 0 0;color:#dce9e1}
+.archive-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0}
+.archive-charts figure{margin:0}.archive-charts img{display:block;width:100%;height:auto}.archive-charts figcaption{margin-top:8px}.archive-charts a{color:var(--green)}
+@media(max-width:760px){.archive-charts{grid-template-columns:1fr}}

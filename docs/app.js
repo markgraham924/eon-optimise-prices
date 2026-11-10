@@ -7,23 +7,29 @@ async function load(){
  catch(e){$('#freshness').textContent='Price data is temporarily unavailable';document.body.classList.add('load-error')}
 }
 function setup(){
- const days=state.data.days;$('#archive-coverage').textContent=days.length?`Price history: ${dayLabel(days[0])} to ${dayLabel(days.at(-1))} · ${days.length} dates. The first and last dates may be incomplete. Future prices can change.`:'No price history available.';
- const d=$('#day');state.data.days.forEach(x=>d.add(new Option(dayLabel(x),x)));const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London'}).format(new Date());state.day=state.data.days.includes(today)?today:state.data.days.at(-1);d.value=state.day;d.onchange=()=>{state.day=d.value;render()};
+ const days=state.data.days;$('#archive-coverage').textContent=days.length?`Price history: ${dayLabel(days[0])} to ${dayLabel(days.at(-1))} · ${days.length} dates. The first and last dates may be incomplete. Saved forecast slots may differ from the final rate.`:'No price history available.';
+ const d=$('#day');state.data.days.forEach(x=>d.add(new Option(dayLabel(x),x)));state.day=state.data.channels.import.findLast(row=>row.quality!=='forecast')?.day??days.at(-1);d.value=state.day;d.onchange=()=>{state.day=d.value;render()};
  document.querySelectorAll('[data-channel]').forEach(b=>b.onclick=()=>{state.channel=b.dataset.channel;document.querySelectorAll('[data-channel]').forEach(x=>x.classList.toggle('active',x===b));render()});
- const observed=new Date(state.data.observed_at);$('#freshness').textContent=`Prices checked ${new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'Europe/London'}).format(observed)}`;
+ const observed=new Date(state.data.observed_at);$('#freshness').textContent=`Archive last checked ${new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'Europe/London'}).format(observed)}`;
  window.addEventListener('resize',draw);const c=$('#price-chart');c.addEventListener('mousemove',move);c.addEventListener('mouseleave',()=>{$('#tooltip').hidden=true;state.hover=-1;draw()});
 }
 function render(){
- state.points=state.data.channels[state.channel].filter(x=>x.day===state.day).sort((a,b)=>a.start-b.start);$('#chart-title').textContent=`${state.channel[0].toUpperCase()+state.channel.slice(1)} · ${dayLabel(state.day)}`;renderCurrent();renderStats();renderTable();renderRevisions();draw();
+ state.points=state.data.channels[state.channel].filter(x=>x.day===state.day).sort((a,b)=>a.start-b.start);$('#chart-title').textContent=`${state.channel[0].toUpperCase()+state.channel.slice(1)} · ${dayLabel(state.day)}`;renderLatestObservation();renderStats();renderTable();renderRevisions();draw();
 }
-function renderCurrent(){
- const now=Date.now()/1000;for(const ch of ['import','export']){const p=state.data.channels[ch].find(x=>x.start<=now&&x.end>now);$(`#current-${ch}`).textContent=p?fmt(p.latest):'—'}const p=state.data.channels.import.find(x=>x.start<=now&&x.end>now);$('#current-period').textContent=p?`${time(p.start)}–${time(p.end)} · published rate`:'No current slot in the published window';
+function renderLatestObservation(){
+ const imports=state.data.channels.import;
+ const exports=new Map(state.data.channels.export.filter(row=>row.quality!=='forecast').map(row=>[row.start,row]));
+ const latest=imports.findLast(row=>row.quality!=='forecast'&&exports.has(row.start));
+ if(!latest){$('#current-period').textContent='No observed slots available';return}
+ $('#current-import').textContent=fmt(latest.latest);
+ $('#current-export').textContent=fmt(exports.get(latest.start).latest);
+ $('#current-period').textContent=`${dayLabel(latest.day)} · ${time(latest.start)}–${time(latest.end)}`;
 }
 function renderStats(){
  const a=state.points;if(!a.length){$('#stats').innerHTML='';return}const vals=a.map(x=>x.latest),changed=a.filter(x=>x.changes>0);const cards=[['Average of shown rates',fmt(vals.reduce((x,y)=>x+y,0)/vals.length)],['Lowest slot',`${fmt(Math.min(...vals))} · ${time(a[vals.indexOf(Math.min(...vals))].start)}`],['Highest slot',`${fmt(Math.max(...vals))} · ${time(a[vals.indexOf(Math.max(...vals))].start)}`],['Revised slots',`${changed.length} of ${a.length}`]];$('#stats').innerHTML=cards.map(([k,v])=>`<div class="stat"><span>${k}</span><strong>${v}</strong></div>`).join('')
 }
 function renderTable(){
- $('#price-table').innerHTML=state.points.map(p=>`<tr><td>${time(p.start)}</td><td><strong>${fmt(p.latest)}</strong></td><td>${fmt(p.first)}</td><td>${p.low===p.high?'—':`${fmt(p.low)} – ${fmt(p.high)}`}</td><td class="${p.changes?'changed':''}">${p.changes||'—'}</td></tr>`).join('')||'<tr><td colspan="5">No prices for this day.</td></tr>'
+ $('#price-table').innerHTML=state.points.map(p=>`<tr><td>${time(p.start)}</td><td><strong>${fmt(p.latest)}</strong></td><td>${fmt(p.first)}</td><td>${p.low===p.high?'—':`${fmt(p.low)} – ${fmt(p.high)}`}</td><td class="${p.changes?'changed':''}">${p.changes||'—'}</td><td>${p.quality==='forecast'?'Forecast':'Observed'}</td></tr>`).join('')||'<tr><td colspan="6">No prices for this day.</td></tr>'
 }
 function renderRevisions(){
  const items=[];for(const channel of ['import','export'])for(const p of state.data.channels[channel])if(p.changes>0)items.push({...p,channel});items.sort((a,b)=>Math.max(...b.history.map(x=>x[0]))-Math.max(...a.history.map(x=>x[0])));$('#revision-list').innerHTML=items.slice(0,9).map(p=>`<article class="revision"><time>${dayLabel(p.day)} · ${time(p.start)} · ${p.channel}</time><strong>${fmt(p.first)} → ${fmt(p.latest)}</strong><p>${p.changes} ${p.changes===1?'change':'changes'} saved · range ${fmt(p.low)}–${fmt(p.high)}</p></article>`).join('')||'<div class="empty">No saved price changes.</div>'
