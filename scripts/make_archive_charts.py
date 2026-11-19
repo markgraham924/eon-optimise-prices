@@ -73,6 +73,56 @@ def figure(title, subtitle, note):
     return fig, axes
 
 
+def price_trends(complete, path, period):
+    first, last = min(complete), max(complete)
+    dates = [first + timedelta(days=offset) for offset in range((last - first).days + 1)]
+    daily = {}
+    for day, channels in complete.items():
+        rows = channels["import"]
+        prices = [row["latest"] for row in rows]
+        overnight = [row["latest"] for row in rows
+                     if datetime.fromtimestamp(row["start"], LONDON).hour < 6]
+        daily[day] = (mean(prices), max(prices), min(prices), mean(overnight))
+
+    missing = float("nan")
+    rolling = []
+    for index in range(len(dates)):
+        window = dates[max(0, index - 6):index + 1]
+        rolling.append(mean(daily[day][0] for day in window)
+                       if len(window) == 7 and all(day in daily for day in window)
+                       else missing)
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.5), dpi=160)
+    fig.subplots_adjust(left=.10, right=.96, top=.73, bottom=.20)
+    fig.text(.085, .92, "How did import prices change?", fontsize=25, weight="bold", color=INK)
+    fig.text(.085, .86, f"E.ON Next Optimise · {period}", fontsize=12.5, color=MUTED)
+    for column, label, color, style in (
+        (1, "Daily high", ORANGE, "-"),
+        (2, "Daily low", "#694A94", ":"),
+        (3, "Off-peak average", TEAL, "--"),
+    ):
+        values = [daily[day][column] if day in daily else missing for day in dates]
+        ax.plot(dates, values, label=label, color=color, linestyle=style, lw=1.8)
+    ax.plot(dates, rolling, label="7-day rolling average", color=INK, lw=2.6)
+    fig.legend(loc="upper left", bbox_to_anchor=(.079, .834), ncol=4, frameon=False, fontsize=10)
+    ax.set_ylabel("p/kWh", color=MUTED)
+    ax.tick_params(length=0, pad=7, labelcolor=MUTED)
+    ax.spines[:].set_visible(False)
+    ax.set_axisbelow(True)
+    ax.grid(axis="y", color="#e0e8e7")
+    ax.axhline(0, color="#91a4aa", lw=.75)
+    ax.set_xlim(first - timedelta(days=1), last + timedelta(days=1))
+    locator = mdates.AutoDateLocator(minticks=4, maxticks=9)
+    ax.xaxis.set_major_locator(locator)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+    fig.text(.085, .075, "Off-peak is 00:00–06:00 UK time. Rolling averages use seven consecutive complete days.",
+             fontsize=10, color=MUTED)
+    fig.text(.085, .035, "North West England · Early Bird Booster included · Optimise Price Watch",
+             fontsize=10, color=MUTED)
+    fig.savefig(path / "optimise-import-price-trends.png")
+    plt.close(fig)
+
+
 def main():
     data = json.loads((DOCS / "data" / "north-west.json").read_text(encoding="utf-8"))
     complete = complete_days(data)
@@ -80,6 +130,7 @@ def main():
     period = f"{dates[0]:%d %b}–{dates[-1]:%d %b %Y} · {len(dates)} complete days"
     path = DOCS / "charts"
     path.mkdir(exist_ok=True)
+    price_trends(complete, path, period)
 
     fig, axes = figure("How far did prices move each day?",
                        f"E.ON Next Optimise · {period}",
@@ -95,7 +146,7 @@ def main():
         ax.scatter(dates, lows, s=12, color=color)
         ax.scatter(dates, highs, s=12, color=color)
         ax.set_xlim(mdates.date2num(dates[0]) - 1, mdates.date2num(dates[-1]) + 1)
-        ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator(minticks=4, maxticks=9))
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
         print(channel, "historical min/max:", min(lows), max(highs),
               "days with a negative slot:", sum(value < 0 for value in lows))
